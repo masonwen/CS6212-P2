@@ -6,6 +6,8 @@ import java.util.List;
 
 public class main {
     public static void main(String args[]){
+        long start = System.currentTimeMillis();
+
         //generate points
         List<Point> points = new ArrayList();
         int n = 20;//The number of points
@@ -16,19 +18,22 @@ public class main {
             points.add(d);
         }
 
+        //print point
         for(Point e : points){
             System.out.println(e);
         }
 
-        long startTime = System.currentTimeMillis();
-        List<Point> problemb = Pareto.nlogn.compute(points);
+
+
+        List<Point> problemc = Pareto.nlogh.compute(points);
         System.out.println("\nPareto-optimal points: ");
-        long endTime = System.currentTimeMillis();
-        for(Point e : problemb) {
+        for(Point e : problemc) {
             System.out.println(e);
         }
-        System.out.println("\nThe number of Pareto-optimal points is : " + problemb.size());
-        System.out.println("Elapsed time: " + (endTime - startTime) + "ms");
+        System.out.println("\nThe number of Pareto-optimal points is : " + problemc.size());
+
+        long end = System.currentTimeMillis();
+        System.out.println("use " + (end - start) + " times");
     }
 
 

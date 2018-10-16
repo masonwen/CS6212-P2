@@ -22,18 +22,66 @@ import java.util.List;
 public class nlogh {
     public static java.util.List<Point> compute(java.util.List<Point> points){
 
-        java.util.List<Point> x = new ArrayList<>(points);
+        List<Point> set = new ArrayList<>();
+        Point poPoints;
+
+        if(points.size() < 1){
+            return set;
+        }
+        if(points.size() == 1){
+            set.addAll(points);
+            return set;
+        }
+
+        /**
+         * Find the x-median
+         */
+        double xMax = -1;
+        double xMin = 2000;
+        double xMid;
+        for(int i = 0; i < points.size(); i++)
+        {
+            if(points.get(i).getX() >= xMax)
+                xMax = points.get(i).getX();
+
+            if(points.get(i).getX() <= xMin)
+                xMin = points.get(i).getX();
+        }
+        xMid = (xMax + xMin)/2;
 
 
-        //output pareto points
-        List<Point> poPoints  = new ArrayList<>();
-        double currMaxY = -1;
-        for (Point p: points) {
-            if (p.getY() > currMaxY) {
-                poPoints.add(p);
-                currMaxY = p.getY();
+        /**
+         * Find point P with max(y) where x >= xMid
+         */
+        poPoints = new Point(-1, -1);
+        for(int i = 0; i < points.size(); i++)
+        {
+            double yMax = poPoints.getY();
+            if(points.get(i).getX() >= xMid && points.get(i).getY() >= yMax){
+                    poPoints = points.get(i);
             }
         }
-        return poPoints;
+        set.add(poPoints);
+
+        /**
+         * Divide
+         * keep lef-top and right parts
+         */
+        List<Point> leftTop = new ArrayList<>();
+        List<Point> right = new ArrayList<>();
+        for(int j = 0; j < points.size(); j++)
+        {
+            if(points.get(j).getX() < poPoints.getX() && points.get(j).getY() > poPoints.getY())
+                leftTop.add(points.get(j));
+            else if(points.get(j).getX() > poPoints.getX())
+                right.add(points.get(j));
+        }
+
+        //Conquer
+        set.addAll(nlogh.compute(leftTop)); // left-top part
+        set.addAll(nlogh.compute(right)); // right part
+
+        //Merge
+        return set;
     }
 }
